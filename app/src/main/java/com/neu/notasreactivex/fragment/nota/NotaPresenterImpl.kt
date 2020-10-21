@@ -1,22 +1,24 @@
 package com.neu.notasreactivex.fragment.nota
 
 import android.os.Bundle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.neu.notasreactivex.activity.NotaViewModel
 import com.neu.notasreactivex.model.Nota
-import com.neu.notasreactivex.reactive.RXJava
-import com.neu.notasreactivex.reactive.RXJava.observer_nota
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_nota.*
 
-class NotaPresenterImpl(val notaView: NotaView) : NotaPresenter, Observer<Nota> {
-    private lateinit var nota: Nota
+class NotaPresenterImpl(val notaView: NotaView, var notaLiveData: MutableLiveData<Nota>) : NotaPresenter{
 
-    init {
-        observer_nota = this
+    override fun setObserve(viewLifecycleOwner: LifecycleOwner) {
+        notaLiveData.observe(viewLifecycleOwner, {
+            setarDados()
+        })
     }
 
-    private fun setarDados() {
+    override fun getNotaJson() = Gson().toJson(notaLiveData.value)
+
+    override fun setarDados() {
+        val nota : Nota = notaLiveData.value!!
         val (titulo, descricao) = nota
         notaView.setTitulo(titulo)
         notaView.setDescricao(descricao)
@@ -24,33 +26,12 @@ class NotaPresenterImpl(val notaView: NotaView) : NotaPresenter, Observer<Nota> 
     }
 
     private fun getNotaFromJson(notaJson: String) {
-        nota = Gson().fromJson(notaJson, Nota::class.java)
+        notaLiveData.value = Gson().fromJson(notaJson, Nota::class.java)
     }
 
     override fun getNotaFromArgs(requireArguments: Bundle) {
         getNotaFromJson(NotaFragmentArgs.fromBundle(requireArguments).nota)
-        setarDados()
     }
 
-    override fun getNotaJson() = Gson().toJson(nota)
-
-    override fun onSubscribe(d: Disposable?) {
-
-    }
-
-    override fun onNext(nota: Nota?) {
-        nota.let {
-            if(nota?.id == this.nota.id)
-            {
-                this.nota = nota
-                setarDados()
-            }
-        }
-    }
-
-    override fun onError(e: Throwable?) {
-    }
-
-    override fun onComplete() {
-    }
+    override fun getLiveData() = notaLiveData
 }

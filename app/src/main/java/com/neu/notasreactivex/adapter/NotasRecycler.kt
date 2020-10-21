@@ -11,7 +11,7 @@ import com.neu.notasreactivex.model.Nota
 import kotlin.random.Random
 
 class NotasRecycler(
-    private var listaNotas: MutableList<Nota>,
+    private var listaNotas: MutableList<Nota> = mutableListOf(),
     private val onNotaClickListener: OnNotaClickListener
 ) :
     RecyclerView.Adapter<NotasRecycler.NotaHolder>() {

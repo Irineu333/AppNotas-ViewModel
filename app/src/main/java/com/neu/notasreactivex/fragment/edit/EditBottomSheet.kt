@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.neu.notasreactivex.R
+import com.neu.notasreactivex.model.Nota
 import kotlinx.android.synthetic.main.edit_bottom_sheet.*
 
 
